@@ -1,7 +1,7 @@
 /*$T temp.c GC 1.150 2013-09-13 13:41:37 */
 
 /*
-** selectserver.c -- a cheezy multiperson chat server
+** << desription & license >>
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,14 +23,14 @@
 #include "pocketsphinx.h"
 
 // global vars
-fd_set					master;		// master file descriptor list
-fd_set					read_fds;	// temp file descriptor list for select()
-int						fdmax;		// maximum file descriptor number
-int						listener;	// listening socket descriptor
-int	openhab_fd = -1; // openhab fd to which we write back
-static ps_decoder_t *pocket_sphinx;				// pocketsphinx decoder
-static jmp_buf		jbuf;
-static cmd_ln_t		*config;					// pocketsphin config?? -> CHECK
+fd_set	master;				// master file descriptor list
+fd_set	read_fds;			// temp file descriptor list for select()
+int	fdmax;				// maximum file descriptor number
+int	listener;			// listening socket descriptor
+int	openhab_fd = -1; 		// openhab fd to which we write back
+static 	ps_decoder_t *pocket_sphinx;	// pocketsphinx decoder
+static 	jmp_buf	jbuf;
+static 	cmd_ln_t *config;		// pocketsphin config?? -> CHECK
 
 /* dunno what this does */
 static void sighandler(int signo)
