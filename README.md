@@ -38,6 +38,9 @@ unzip
 
 Compiling PocketSphinx
 ----------------------
+Following librarie sneed to be insalled before 
+
+## Compiling step 1
 Execute the following commands
 
 Test using `continuous and then some` to verify PocketSphinx is working
