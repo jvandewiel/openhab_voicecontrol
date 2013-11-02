@@ -25,12 +25,12 @@ Execute `arecord something something` and record a couple of seconds of audio. T
 Setup PocketSphinx
 ------------------
 Execute the following to download, configure and compile PocketSphinx. More detail can be found at this URL http://www.cmusphinx.edu
-
-`mkdir pocketsphinx` 
-`wget something`
-`wget something else`
-`unzip`
-
+```Shell
+mkdir pocketsphinx
+wget something
+wget something else
+unzip
+```
 - download pocketshpinx stuff (spec dir's)
 - download required libs for compiling
  
