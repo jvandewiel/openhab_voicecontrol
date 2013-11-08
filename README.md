@@ -3,19 +3,25 @@ OpenHAB Voicecontrol
 
 Openhab configuration with PocketShinx/custom server for voice control and TTS
 
-* high level description
+High level description
+----------------------
+This is a setup for a voice-to-command system using a Raspberry Pi (RPi) for voice recognition, with a custom "server" that converts voice to commands, which are being send to a different machine running OpenHAB. OpenHAB contains some rules that will execute the command, and send a text response back to the RPi. The RPi then uses text-to-speech (TTS) to provide audio feedback.
+
+The following hardware is used:
+- a machine that runs OpenHab (OH Server, I used [one of these] (http://www.minix.com.hk/Products/MINIX-NEOX5.html) but then running Ubuntu/Linux using the information in [this guideline] (http://minixforums.com/threads/linux-on-minix-x5.1388/)
+- a machine that runs the "voice to command" server; in this case a Raspberry Pi (RPi)
+- a machine that runs Festival TTS (in my case this runs on the same machine as OpenHAB)
 
 Some notes about performance
 ----------------------------
-The performance and quality of open source speech recognition software under linux is not as good as some
-commercial alternatives that are available for windows. Combined with the limited processing power of the RPi, this
-specific use case might not be ready for production. Currently, speech s recognized in most cases, but also due to 
-the limited set of words available in the dictionary. Processing time from speech to command, to action to 
-response is a few seconds - acceptable for me but YMMV.
+The performance and quality of open source speech recognition software under linux is not as good as some commercial alternatives that are available. Combined with the limited processing power of the RPi, this specific use case might not be ready for production, non the least due to the "hacked" server software (no threading, hardcoded stuff, lack of error handling). Currently, speech is recognized in most cases, also due to the limited set of words available in the dictionary. Processing time from speech to command, to action to response is a few seconds - acceptable for me as a proof of concept, but YMMV. 
 
 Installation steps RPi
 ----------------------
-The starting point for the RPi is a clean install with Raspbian, based on [this imag] (http://downloads.raspberrypi.org/raspbian_latest).
+The starting point for the RPi is a clean install with Raspbian, based on [this image] (http://downloads.raspberrypi.org/raspbian_latest).
+
+Basic setup
+
 
 * Pocktesphinx
 Next steps are the installation of PocketSphinx and the dev environment
@@ -24,10 +30,7 @@ Next steps are the installation of PocketSphinx and the dev environment
 - trigger word -> responds by sending text string to festival_server and playing audio
 - if recog, send to openhab -> execute command -> send response (text) -> send to server for audio -> play audio
 
-Following steps need to be executed; assumption on sserver is as follows:
-- 1 machine that runs OpenHab (OH Server)
-- 1 machine that runs the "voice to command" server; I used a Raspberry Pi (RPi)
-- 1 machine that runs Festival TTS (in my case this runs on the same machine as OpenHAB)
+
 
 All machines run a flavour of Ubuntu 12.04/Linux
 
