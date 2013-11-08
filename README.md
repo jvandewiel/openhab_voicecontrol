@@ -9,17 +9,26 @@ This is a setup for a voice-to-command system using a Raspberry Pi (RPi) for voi
 
 The following hardware is used:
 - a machine that runs OpenHab (OH Server, I used [one of these] (http://www.minix.com.hk/Products/MINIX-NEOX5.html) but then running Ubuntu/Linux using the information in [this guideline] (http://minixforums.com/threads/linux-on-minix-x5.1388/)
-- a machine that runs the "voice to command" server; in this case a Raspberry Pi (RPi)
+- a machine that runs the "voice to command" server; in this case a Raspberry Pi model B (RPi)
 - a machine that runs Festival TTS (in my case this runs on the same machine as OpenHAB)
+Additionally, a set of speakers (connected to the RPi) and an audio-in device is required (a Logitech USB Webcam is used here). In this guide there is also a USB WiFi stick. 
 
 ### Some notes about performance
 The performance and quality of open source speech recognition software under linux is not as good as some commercial alternatives that are available. Combined with the limited processing power of the RPi, this specific use case might not be ready for production, non the least due to the "hacked" server software (no threading, hardcoded stuff, lack of error handling). Currently, speech is recognized in most cases, also due to the limited set of words available in the dictionary. Processing time from speech to command, to action to response is a few seconds - acceptable for me as a proof of concept, but YMMV. 
 
 Installation steps RPi
 ----------------------
-The starting point for the RPi is a clean install with Raspbian, based on [this image] (http://downloads.raspberrypi.org/raspbian_latest).
+The starting point for the RPi is a clean install with [Moebius] (http://moebiuslinux.sourceforge.net/documentation/installation-guide/), based on [the 1.1.1. image] (http://sourceforge.net/projects/moebiuslinux/files/raspberry.stable/), which is a more bare-bones version of Raspbian, on a 4GB SD card. However, a clean Raspbian can also be used; some of the steps to prep the RPi can then likely be skipped. The following steps are starting with the first boot of the (LAN network connected) RPi and the first SSH session
 
 ### Basic setup
+During the first SSH into the RPi (raspberrypi) with user root, password raspi, the config will run. Select autoresize, 2 reboots will follow and SSH again. 
+
+Run the config again, change
+- change pwd
+- adduser
+- set hostname
+- install some basic stuff (smb server, nfs-client,
+- setup WiFi (details)
 
 
 * Pocktesphinx
