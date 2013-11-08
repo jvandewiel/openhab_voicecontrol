@@ -12,15 +12,14 @@ The following hardware is used:
 - a machine that runs the "voice to command" server; in this case a Raspberry Pi (RPi)
 - a machine that runs Festival TTS (in my case this runs on the same machine as OpenHAB)
 
-Some notes about performance
-----------------------------
+### Some notes about performance
 The performance and quality of open source speech recognition software under linux is not as good as some commercial alternatives that are available. Combined with the limited processing power of the RPi, this specific use case might not be ready for production, non the least due to the "hacked" server software (no threading, hardcoded stuff, lack of error handling). Currently, speech is recognized in most cases, also due to the limited set of words available in the dictionary. Processing time from speech to command, to action to response is a few seconds - acceptable for me as a proof of concept, but YMMV. 
 
 Installation steps RPi
 ----------------------
 The starting point for the RPi is a clean install with Raspbian, based on [this image] (http://downloads.raspberrypi.org/raspbian_latest).
 
-Basic setup
+### Basic setup
 
 
 * Pocktesphinx
