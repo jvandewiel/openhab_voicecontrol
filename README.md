@@ -13,6 +13,12 @@ specific use case might not be ready for production. Currently, speech s recogni
 the limited set of words available in the dictionary. Processing time from speech to command, to action to 
 response is a few seconds - acceptable for me but YMMV.
 
+Installation steps RPi
+----------------------
+The starting point for the RPi is a clean install with Raspbian, based on [this imag] (http://downloads.raspberrypi.org/raspbian_latest).
+
+* Pocktesphinx
+Next steps are the installation of PocketSphinx and the dev environment
  
 - continuosly records via audio in, check for speech recognition. If so, display recognize + word
 - trigger word -> responds by sending text string to festival_server and playing audio
