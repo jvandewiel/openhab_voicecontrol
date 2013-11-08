@@ -55,7 +55,7 @@ Compiling PocketSphinx
 ----------------------
 Following librarie sneed to be insalled before 
 
-## Compiling step 1
+Compiling step 1
 Execute the following commands
 
 Test using `continuous and then some` to verify PocketSphinx is working
@@ -121,56 +121,77 @@ sudo make install
 
 ```
 
-# path settings
+Path settings
+```shell
 export PYTHONPATH="/usr/local/lib/python2.7/site-packages"
+```
 
-- get langauge and acoustic models
+Get langauge and acoustic models from
 http://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/US%20English%20Generic%20Language%20Model/
 http://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/US%20English%20Generic%20Acoustic%20Model/
 
+``` shell
 wget -c http://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/US%20English%20Generic%20Language%20Model/en-us.lm.dmp/download 
 wget -c http://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/US%20English%20Generic%20Acoustic%20Model/en-us.tar.gz/download
+```
 
-#run with
-- not neccse. after recomp LD_LIBRARY_PATH=/usr/local/lib /usr/local/bin/pocketsphinx_continuous
+run with
+- not neccse. after recomp 
 
-select correct input and more: https://sites.google.com/site/observing/Home/speech-recognition-with-the-raspberry-pi
+` LD_LIBRARY_PATH=/usr/local/lib /usr/local/bin/pocketsphinx_continuous `
 
-# remove all pulseaudio*, install per http://wiki.roberttwomey.com/Raspberry_Pi#pocketsphinx
-# should display in make process that ALSA is being used instead of pulseaudio
+Select correct input and more: https://sites.google.com/site/observing/Home/speech-recognition-with-the-raspberry-pi
 
-install tool kit per http://kerneldriver.org/blog/2013/02/08/using-pocketsphinx-part-2-using-the-cmu-cambridge-statistical-language-modeling-toolkit/
+Remove all pulseaudio*, install per http://wiki.roberttwomey.com/Raspberry_Pi#pocketsphinx
+Should display in make process that ALSA is being used instead of pulseaudio
 
-source festival https://github.com/zeehio/festival/tree/master/examples
+Install tool kit per http://kerneldriver.org/blog/2013/02/08/using-pocketsphinx-part-2-using-the-cmu-cambridge-statistical-language-modeling-toolkit/
 
-# per http://www.ghatage.com/2012/12/make-pocketsphinx-recognize-new-words/
-# create dic/lang model: http://www.speech.cs.cmu.edu/tools/lmtool.html using input file with sentences & words
-# unzip tar file, load with
+Source festival https://github.com/zeehio/festival/tree/master/examples
+
+Per http://www.ghatage.com/2012/12/make-pocketsphinx-recognize-new-words/
+Create dic/lang model: http://www.speech.cs.cmu.edu/tools/lmtool.html using input file with sentences & words unzip tar file, load with
+
+```shell
 pocketsphinx_continuous -adcdev sysdefault -samprate 16000 -dict /home/pi/4203.dic -lm /home/pi/4203.lm (or whatever lm/doc are returned)
+```
 
-# pocketsphinx links
-some features discussion http://sourceforge.net/p/cmusphinx/discussion/help/thread/49e34dff/
-local lmtools http://scribblej.com/svn/
-http://www.jaivox.com/pocketsphinx.html
-# acoustic model http://cmusphinx.sourceforge.net/wiki/tutorialadapt
+Pocketsphinx links
+------------------
+- Features discussion http://sourceforge.net/p/cmusphinx/discussion/help/thread/49e34dff/
+- Local lmtools http://scribblej.com/svn/ and http://www.jaivox.com/pocketsphinx.html
+- Acoustic model http://cmusphinx.sourceforge.net/wiki/tutorialadapt
+
+Other links
+-----------
 http://kerneldriver.org/blog/2013/02/08/using-pocketsphinx-part-1-using-the-sphinx-knowledge-base-tool/
 http://cmusphinx.sourceforge.net/wiki/sphinxinaction
 http://cmusphinx.sourceforge.net/wiki/tutorialpocketsphinx
 http://stackoverflow.com/questions/4535208/pocketsphinx-adding-words-and-improving-accuracy
-xbmc voice control http://forum.xbmc.org/showthread.php?tid=123621
+XBMC voice control http://forum.xbmc.org/showthread.php?tid=123621
 http://hackaday.com/2013/08/11/voice-controlled-home-automation-uses-raspberry-pi-and-lightwaverf/ 
 http://stevenhickson.blogspot.nl/2013/06/installing-and-updating-piauisuite-and.html
 http://www.moop.org.uk/index.php/2013/08/10/voice-controlled-lights/
-# some links
+
+TTS links
+---------
 TTS http://elinux.org/RPi_Text_to_Speech_%28Speech_Synthesis%29
 http://wahelper.brailcom.org/doc/speechd/speech-dispatcher.html and http://devel.freebsoft.org/speechd
-#festival source code 
+
+Festival source code 
+--------------------
+
 https://github.com/zeehio/festival/blob/master/examples/festival_client.c
 https://github.com/zeehio/festival/blob/master/examples/festival_client.h
 http://www.festvox.org/docs/manual-1.4.3/festival_28.html#SEC129
-# for compiling, see http://cmusphinx.sourceforge.net/wiki/tutorialpocketsphinx
-# custom continuous.c; compile using  
-gcc -o stevo continuous.c -DMODELDIR=\"`pkg-config --variable=modeldir pocketsphinx`\" `pkg-config --cflags --libs pocketsphinx sphinxbase`
-# call using
-./stevo -adcdev sysdefault -samprate 16000 -dict /home/pi/4203.dic -lm /home/pi/4203.lm
 
+For compiling, see http://cmusphinx.sourceforge.net/wiki/tutorialpocketsphinx
+custom continuous.c; compile using
+```shell
+gcc -o stevo continuous.c -DMODELDIR=\"`pkg-config --variable=modeldir pocketsphinx`\" `pkg-config --cflags --libs pocketsphinx sphinxbase`
+```
+
+Call using
+```shell
+./stevo -adcdev sysdefault -samprate 16000 -dict /home/pi/4203.dic -lm /home/pi/4203.lm
+```
