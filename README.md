@@ -39,7 +39,7 @@ Execute `arecord something something` and record a couple of seconds of audio. T
 
 Setup PocketSphinx
 ------------------
-Execute the following to download, configure and compile PocketSphinx. More detail can be found at this URL http://www.cmusphinx.edu
+Execute the following to download, configure and compile PocketSphinx. More detail can be found at [this URL] (http://www.cmusphinx.edu)
 ```Shell
 mkdir pocketsphinx
 wget something
@@ -76,7 +76,7 @@ http://ubuntuforums.org/showthread.php?t=751169
 
 Installation of Festival
 ------------------------
-- get voice from http://hts.sp.nitech.ac.jp/archives/2.1/
+- get voices from http://hts.sp.nitech.ac.jp/archives/2.1/
 - untar, copy (see ubuntuforums link)
 * need to be compiled
 wget -c http://downloads.sourceforge.net/project/sp-tk/SPTK/SPTK-3.6/SPTK-3.6.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fsp-tk%2Ffiles%2FSPTK%2FSPTK-3.6%2F&ts=1377781885&use_mirror=netcologne
@@ -142,7 +142,7 @@ run with
 
 Select correct input and more: https://sites.google.com/site/observing/Home/speech-recognition-with-the-raspberry-pi
 
-Remove all pulseaudio*, install per http://wiki.roberttwomey.com/Raspberry_Pi#pocketsphinx
+Remove all pulseaudio, install per http://wiki.roberttwomey.com/Raspberry_Pi#pocketsphinx
 Should display in make process that ALSA is being used instead of pulseaudio
 
 Install tool kit per http://kerneldriver.org/blog/2013/02/08/using-pocketsphinx-part-2-using-the-cmu-cambridge-statistical-language-modeling-toolkit/
@@ -185,7 +185,7 @@ https://github.com/zeehio/festival/blob/master/examples/festival_client.c
 https://github.com/zeehio/festival/blob/master/examples/festival_client.h
 http://www.festvox.org/docs/manual-1.4.3/festival_28.html#SEC129
 
-For compiling, see http://cmusphinx.sourceforge.net/wiki/tutorialpocketsphinx
+For compiling, see [here] (http://cmusphinx.sourceforge.net/wiki/tutorialpocketsphinx)
 custom continuous.c; compile using
 ```shell
 gcc -o stevo continuous.c -DMODELDIR=\"`pkg-config --variable=modeldir pocketsphinx`\" `pkg-config --cflags --libs pocketsphinx sphinxbase`
