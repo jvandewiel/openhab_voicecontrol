@@ -21,17 +21,34 @@ Installation steps RPi
 The starting point for the RPi is a clean install with [Moebius] (http://moebiuslinux.sourceforge.net/documentation/installation-guide/), based on [the 1.1.1. image] (http://sourceforge.net/projects/moebiuslinux/files/raspberry.stable/), which is a more bare-bones version of Raspbian, on a 4GB SD card. However, a clean Raspbian can also be used; some of the steps to prep the RPi can then likely be skipped. The following steps are starting with the first boot of the (LAN network connected) RPi and the first SSH session.
 
 ### Basic setup
-During the first SSH into the RPi (raspberrypi) with user root, password raspi, the config will run. Select autoresize, 2 reboots will follow and SSH again. Run ```apt-get update``` and ```apt-get upgrade``` to get everything up-to-date, and reboot one more time. Change the root password with ```passwd``` and add a new user, which will be running the server, with ```useradd pi``` and ```passwd pi``` (need to enable SSH for this one, disable for root). Then ```apt-get install samba nfs-common``` to setup NFS (client) and Samba (server), cd to the new user's home folder ```/home/pi/``` and run the following to get the required PocketSphinx libraries
+During the first SSH into the RPi (raspberrypi) with user root, password raspi, the config will run. Select autoresize, 2 reboots will follow and SSH again. Run ```apt-get update``` and ```apt-get upgrade``` to get everything up-to-date, and reboot one more time. Change the root password with ```passwd``` and add a new user, which will be running the server, with ```useradd pi``` and ```passwd pi``` (need to enable SSH for this one, disable for root), create the pi home folder with ```mkdir /home/pi``` and ```chown pi:pi /home/pi``` . Then ```apt-get install samba nfs-common``` to setup NFS (client) and Samba (server), run ```nano /etc/samba/smb.conf``` and add the ```/home/pi``` folder to the samba config (so it can be accessed from a Windows machine) by adding the following tot the file:
+
+```shell
+[pihome]
+force user = pi
+force group = pi
+comment = Home pi
+writeable = yes
+public = yes
+path = /home/pi/
+```        
+
+Run ```service samba restart``` and check if the RPi is accessible.
+
+### PocketSphinx setup
+Go to the new user's home folder with ```cd /home/pi/``` and run the following to get the required PocketSphinx libraries and the required development files
 
 ```Shell
-wget  http://downloads.sourceforge.net/project/cmusphinx/sphinxbase/0.8/sphinxbase-0.8.tar.gz
+apt-get install gcc
+
+wget http://downloads.sourceforge.net/project/cmusphinx/sphinxbase/0.8/sphinxbase-0.8.tar.gz
 tar -xvf sphinxbase-0.8.tar.gz
 cd sphinxbase-0.8
 ./configure
 make
 sudo make install
 
-wget  wget http://sourceforge.net/projects/cmusphinx/files/pocketsphinx/0.8/pocketsphinx-0.8.tar.gz
+wget http://sourceforge.net/projects/cmusphinx/files/pocketsphinx/0.8/pocketsphinx-0.8.tar.gz
 tar -xvf pocketsphinx-0.8.tar.gz
 cd pocketsphinx-0.8
 ./configure
