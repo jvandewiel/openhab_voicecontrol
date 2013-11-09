@@ -21,17 +21,27 @@ Installation steps RPi
 The starting point for the RPi is a clean install with [Moebius] (http://moebiuslinux.sourceforge.net/documentation/installation-guide/), based on [the 1.1.1. image] (http://sourceforge.net/projects/moebiuslinux/files/raspberry.stable/), which is a more bare-bones version of Raspbian, on a 4GB SD card. However, a clean Raspbian can also be used; some of the steps to prep the RPi can then likely be skipped. The following steps are starting with the first boot of the (LAN network connected) RPi and the first SSH session.
 
 ### Basic setup
-During the first SSH into the RPi (raspberrypi) with user root, password raspi, the config will run. Select autoresize, 2 reboots will follow and SSH again. Run ```apt-get update``` and ```apt-get upgrade``` to get everything up-to-date, and reboot one more time. Change the root password
+During the first SSH into the RPi (raspberrypi) with user root, password raspi, the config will run. Select autoresize, 2 reboots will follow and SSH again. Run ```apt-get update``` and ```apt-get upgrade``` to get everything up-to-date, and reboot one more time. Change the root password with ```passwd``` and add a new user, which will be running the server, with ```useradd pi``` and ```passwd pi``` (need to enable SSH for this one, disable for root). Then ```apt-get install samba nfs-common``` to setup NFS (client) and Samba (server), cd to the new user's home folder ```/home/pi/``` and run the following to get the required PocketSphinx libraries
 
-``` shell
-apt-get update
-apt-get upgrade
+```Shell
+wget  http://downloads.sourceforge.net/project/cmusphinx/sphinxbase/0.8/sphinxbase-0.8.tar.gz
+tar -xvf sphinxbase-0.8.tar.gz
+cd sphinxbase-0.8
+./configure
+make
+sudo make install
+
+wget  wget http://sourceforge.net/projects/cmusphinx/files/pocketsphinx/0.8/pocketsphinx-0.8.tar.gz
+tar -xvf pocketsphinx-0.8.tar.gz
+cd pocketsphinx-0.8
+./configure
+make
+sudo make install
 ```
 
 Run the config again with , change root password and set the 
 
-- change pwd
-- adduser
+
 - set hostname
 - install some basic stuff (smb server, nfs-client,
 - setup WiFi (details)
