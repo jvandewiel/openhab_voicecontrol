@@ -39,21 +39,21 @@ Run ```service samba restart``` and check if the RPi is accessible.
 Go to the new user's home folder with ```cd /home/pi/``` and run the following to get the required PocketSphinx libraries and the required development files
 
 ```Shell
-apt-get install gcc
+apt-get install gcc make bison
 
 wget http://downloads.sourceforge.net/project/cmusphinx/sphinxbase/0.8/sphinxbase-0.8.tar.gz
 tar -xvf sphinxbase-0.8.tar.gz
 cd sphinxbase-0.8
 ./configure
 make
-sudo make install
+make install
 
 wget http://sourceforge.net/projects/cmusphinx/files/pocketsphinx/0.8/pocketsphinx-0.8.tar.gz
 tar -xvf pocketsphinx-0.8.tar.gz
 cd pocketsphinx-0.8
 ./configure
 make
-sudo make install
+make install
 ```
 
 Run the config again with , change root password and set the 
@@ -171,6 +171,9 @@ sudo make install
 
 ```
 
+We are here
+
+=============================================================================================================
 Path settings
 ```shell
 export PYTHONPATH="/usr/local/lib/python2.7/site-packages"
