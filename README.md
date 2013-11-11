@@ -60,8 +60,9 @@ tar -xvf
 
 mkdir voiceserver
 cd voiceserver
-wget https://github.com/jvandewiel/openhab_voicecontrol/blob/master/voiceserver.c
+wget https://raw.github.com/jvandewiel/openhab_voicecontrol/master/voiceserver.c
 cp ../pocketsphinx-0.8/include/pocketsphinx.h .
+LIBRARY SETUP
 gcc -o voiceserver voiceserver.c -DMODELDIR=\"`pkg-config --variable=modeldir pocketsphinx`\" `pkg-config --cflags --libs pocketsphinx sphinxbase`
 ```
 
