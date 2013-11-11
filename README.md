@@ -61,8 +61,8 @@ tar -xvf
 mkdir voiceserver
 cd voiceserver
 wget https://github.com/jvandewiel/openhab_voicecontrol/blob/master/voiceserver.c
-cp -v ./ xyz /pocketsphinx.h
-
+cp ../pocketsphinx-0.8/include/pocketsphinx.h .
+gcc -o voiceserver voiceserver.c -DMODELDIR=\"`pkg-config --variable=modeldir pocketsphinx`\" `pkg-config --cflags --libs pocketsphinx sphinxbase`
 ```
 
 Run the config again with , change root password and set the 
