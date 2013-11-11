@@ -54,6 +54,15 @@ cd pocketsphinx-0.8
 ./configure
 make
 make install
+
+wget <voice stuff from sourcefor>
+tar -xvf
+
+mkdir voiceserver
+cd voiceserver
+wget https://github.com/jvandewiel/openhab_voicecontrol/blob/master/voiceserver.c
+cp -v ./ xyz /pocketsphinx.h
+
 ```
 
 Run the config again with , change root password and set the 
