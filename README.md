@@ -241,35 +241,35 @@ Then a set of rules need to be added: 1 to initiate the connection between the R
 
 ```java
 // Startup rule
- rule Startup
+rule Startup
  when
- System started
+  System started
  then
- // let the voiceserver know that this is openhab by sending this string
- sendCommand(rpi, "OPENHAB")
- end
+  // let the voiceserver know that this is openhab by sending this string
+  sendCommand(rpi, "OPENHAB")
+end
 
- rule rpi_command_received
+rule rpi_command_received
  when
- Item rpi changed
+  Item rpi changed
  then
- // logic to handle incoming command
- // print("Incoming:\n")
- // sendCommand(Bedpi, "Response from openhab")
- print("rpi:" + rpi.state.toString + "\n")
+  // logic to handle incoming command
+  // print("Incoming:\n")
+  // sendCommand(Bedpi, "Response from openhab")
+  print("rpi:" + rpi.state.toString + "\n")
  
- // check for lights on
- if (rpi.state.toString.containsIgnoreCase("lights")) {
- println("lights command...")
- if (rpi.state.toString.containsIgnoreCase("on")) {
- // due something with the lights and send a response
- rpi.sendCommand("Turning lights on");
- } 
- if (rpi.state.toString.containsIgnoreCase("off")) {
- // due something with the lights and send a response
- rpi.sendCommand("Turning lights off");
- }
-}	
+  // check for lights on
+  if (rpi.state.toString.containsIgnoreCase("lights")) {
+   println("lights command...")
+    if (rpi.state.toString.containsIgnoreCase("on")) {
+     // due something with the lights and send a response
+     rpi.sendCommand("Turning lights on");
+    } 
+    if (rpi.state.toString.containsIgnoreCase("off")) {
+     // due something with the lights and send a response
+     rpi.sendCommand("Turning lights off");
+    }
+}
 end 
 ```
 
