@@ -252,26 +252,25 @@ end
 
 rule rpi_command_received
 when
-	 Item rpi changed
+Item rpi changed
 then
-	 // logic to handle incoming command
-	 // print("Incoming:\n")
-	 // sendCommand(Bedpi, "Response from openhab")
-	 print("rpi:" + rpi.state.toString + "\n")
-	 
- 	// check for lights on
- 	if (rpi.state.toString.containsIgnoreCase("lights")) {
-  		println("lights command...")
-		  if (rpi.state.toString.containsIgnoreCase("on")) {
-			   // due something with the lights and send a response
-			   rpi.sendCommand("Turning lights on");
-		  } 
-		  if (rpi.state.toString.containsIgnoreCase("off")) {
-			   // due something with the lights and send a response
-						rpi.sendCommand("Turning lights off");
-		  }
-  }	
-
+// logic to handle incoming command
+// print("Incoming:\n")
+// sendCommand(Bedpi, "Response from openhab")
+print("rpi:" + rpi.state.toString + "\n")
+ 
+// check for lights on
+if (rpi.state.toString.containsIgnoreCase("lights")) {
+println("lights command...")
+if (rpi.state.toString.containsIgnoreCase("on")) {
+// due something with the lights and send a response
+rpi.sendCommand("Turning lights on");
+} 
+if (rpi.state.toString.containsIgnoreCase("off")) {
+// due something with the lights and send a response
+rpi.sendCommand("Turning lights off");
+}
+}	
 end 
 ```
 
