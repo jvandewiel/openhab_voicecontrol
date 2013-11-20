@@ -35,11 +35,25 @@ path = /home/pi/
 
 Run ```service samba restart``` and check if the RPi is accessible.
 
+### Alsa setup
+PocketSphinx can both be compiled for Alsa and pulseaudio; this setup uses Alsa (which comes with the Moebius distro) but some configuration is required. Detailed info can be found [here] (http://www.techrepublic.com/article/configuring-linux-sound-services-with-alsa/); this just runs through the commands to configure the USB webcam as default recording device.  
+
+First, test the audio recording and playback using the following commands; this will record whatever is said via the USB webcam and play it back through the connected loudspeaker (the recording can be stopped with ```ctrl-z``` (assuming the USB webcam is ```plughw:1,0```) and should at least confirm the hardware is working.
+
+```
+arecord -D plughw:1,0 test.wav
+aplay test.wav
+```
+
+The following can be skipped if voiceserver is called with the correct hw id; If you cannot hear what was just recorded, there might be a problem with the USB webcam or the speakers; DuckDuckGo or Google is your friend. What is key is to find the correct recording device, in this case that is ```plughw:1,0```.
+
+~~Next step is to configure Alsa, so it will use the USB webcam by default; running ```arecord -D sysdefault test2.wav``` probably gives an ```audio open error: No such file or directory``` which needs to be fixed. Execute a ````nano ``` and modify the line ```options cx88_alsa index=0``` to ```options cx88_alsa index=0``` (this is based on the assumption that the device cx88 is the USB webcam). Then reload the config using ``` alsa force-reload```. Run another test by running: ```arecord -D sysdefault test2.wav``` and ```aplay test2.wav```~~
+
 ### PocketSphinx setup
-Go to the new user's home folder with ```cd /home/pi/``` and run the following to get the required PocketSphinx libraries and the required development files
+Go to the new user's home folder with ```cd /home/pi/``` and run the following to get the required PocketSphinx libraries and the required development files (including the Alsa headers, see [here] (https://sites.google.com/site/observing/Home/speech-recognition-with-the-raspberry-pi))
 
 ```Shell
-apt-get install gcc make bison
+apt-get install gcc make bison libasound2-dev
 
 wget http://downloads.sourceforge.net/project/cmusphinx/sphinxbase/0.8/sphinxbase-0.8.tar.gz
 tar -xvf sphinxbase-0.8.tar.gz
@@ -55,206 +69,219 @@ cd pocketsphinx-0.8
 make
 make install
 
-wget <voice stuff from sourcefor>
-tar -xvf
-
 mkdir voiceserver
 cd voiceserver
 wget https://raw.github.com/jvandewiel/openhab_voicecontrol/master/voiceserver.c
 cp ../pocketsphinx-0.8/include/pocketsphinx.h .
-LIBRARY SETUP
+
 gcc -o voiceserver voiceserver.c -DMODELDIR=\"`pkg-config --variable=modeldir pocketsphinx`\" `pkg-config --cflags --libs pocketsphinx sphinxbase`
 ```
 
-Run the config again with , change root password and set the 
+The next step is to test if voice-recognition is actually working. This will use the default dictionary/language model, which is too large and thus slow, so we need to fix that. But first a test: in the voiceserver folder, run 
+```./voiceserver -adcdev plughw:1,0 -samprate 16000``` and try to speak a few words when the prompt states ```READY```, to see if they are recognized. The program can be exited using ```ctrl-z```. Saying "steven" is a trigger, should be recognized and you should see the following in the console:
 
-
-- set hostname
-- install some basic stuff (smb server, nfs-client,
-- setup WiFi (details)
-
-
-* Pocktesphinx
-Next steps are the installation of PocketSphinx and the dev environment
- 
-- continuosly records via audio in, check for speech recognition. If so, display recognize + word
-- trigger word -> responds by sending text string to festival_server and playing audio
-- if recog, send to openhab -> execute command -> send response (text) -> send to server for audio -> play audio
-
-
-
-All machines run a flavour of Ubuntu 12.04/Linux
-
-Setup RPi
----------
-For the RPi to be able to use the voice control, harrware is needed that can convert 
-speech to a text command. The server software running on the RPi listens continuously 
-and will try to process incming audio into text commands. The following steps need to 
-be executed on a RPi with a default Rasbian installation
-
-Testing audio in/out
---------------------
-Verify the audio in and out are working using the following commands
-Execute `arecord something something` and record a couple of seconds of audio. Then execute `aplay something` to verify audio out is also wrking 
-
-Setup PocketSphinx
-------------------
-Execute the following to download, configure and compile PocketSphinx. More detail can be found at [this URL] (http://www.cmusphinx.edu)
-```Shell
-mkdir pocketsphinx
-wget something
-wget something else
-unzip
 ```
-- download pocketshpinx stuff (spec dir's)
-- download required libs for compiling
- 
+[other output deleted]
+INFO: voiceserver.c(549): ./voiceserver COMPILED ON: Nov 20 2013, AT: 15:16:24
 
-
-Compiling PocketSphinx
-----------------------
-Following librarie sneed to be insalled before 
-
-Compiling step 1
-Execute the following commands
-
-Test using `continuous and then some` to verify PocketSphinx is working
-
-
-----------------------
-
-** original file
-
-
-pi speech
-- festival: echo "Just what do you think you're doing, Dave?" | festival --tts
-- espeak: espeak -ven+f3 -k5 -s100 "I've just picked up a fault in the AE35 unit" [-v voice, -k capitals?? -s speed]
-
-mary cmu-slt-hsmm en_US female hmm
-
-http://ubuntuforums.org/showthread.php?t=751169
-
-Installation of Festival
-------------------------
-- get voices from http://hts.sp.nitech.ac.jp/archives/2.1/
-- untar, copy (see ubuntuforums link)
-* need to be compiled
-wget -c http://downloads.sourceforge.net/project/sp-tk/SPTK/SPTK-3.6/SPTK-3.6.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fsp-tk%2Ffiles%2FSPTK%2FSPTK-3.6%2F&ts=1377781885&use_mirror=netcologne
-wget -c http://hts.sp.nitech.ac.jp/archives/2.2/HTS-2.2_for_HTK-3.4.1.tar.bz2
-wget -c http://downloads.sourceforge.net/hts-engine/hts_engine_API-1.07.tar.gz
-
-do configure, make, sudo make install of hts_engine (check hts_engine in cli)
-do configure, make, sudo make install of SPTK
-
-also check https://help.ubuntu.com/community/TextToSpeech
-
-// ignore above -> move this to xnas installs script stuff; follow howto above for voices
-install festival on xnas, run as server via festival --server, do some security settings in /etc/festival.scm
-call from client via  echo "Lets do some testing" | festival_client --server 192.168.1.30 --port 1314 --async --ttw --aucommand 'aplay $FILE'
-
-openhab install on xnas, add openhab user as well who start -> see openhabpi script install; also for other services under openhab user
-
--- speech recognition
-http://stackoverflow.com/questions/17778532/raspberrypi-pocketsphinx-ps3eye-error-failed-to-open-audio-device
-
-on pi: http://codebangers.com/?p=685
-
-
-sudo apt-get install bison # required
-sudo apt-get install libpulse-dev
-sudo apt-get install gstreamer0.10-pulseaudio libao4 libasound2-plugins libgconfmm-2.6-1c2 libglademm-2.4-1c2a libpulse-dev libpulse-mainloop-glib0 libpulse-mainloop-glib0-dbg libpulse0 libpulse0-dbg libsox-fmt-pulse paman paprefs pavucontrol pavumeter pulseaudio pulseaudio-dbg pulseaudio-esound-compat pulseaudio-esound-compat-dbg pulseaudio-module-bluetooth pulseaudio-module-gconf pulseaudio-module-jack pulseaudio-module-lirc pulseaudio-module-lirc-dbg pulseaudio-module-x11 pulseaudio-module-zeroconf pulseaudio-module-zeroconf-dbg pulseaudio-utils oss-compat -y
-
-```Shell
-wget  http://downloads.sourceforge.net/project/cmusphinx/sphinxbase/0.8/sphinxbase-0.8.tar.gz
-tar -xvf sphinxbase-0.8.tar.gz
-cd sphinxbase-0.8
-./configure
-make
-sudo make install
-
-wget  wget http://sourceforge.net/projects/cmusphinx/files/pocketsphinx/0.8/pocketsphinx-0.8.tar.gz
-tar -xvf pocketsphinx-0.8.tar.gz
-cd pocketsphinx-0.8
-./configure
-make
-sudo make install
+Warning: Could not find Capture element
+READY....
+Listening...
+Recording is stopped, start recording with ad_start_rec
+Stopped listening, please wait...
+INFO: cmn_prior.c(121): cmn_prior_update: from < 56.00 -3.00  1.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00 >
+INFO: cmn_prior.c(139): cmn_prior_update: to   < 44.34 -0.24  2.09  0.66 -0.48 -0.50  0.34 -0.36  0.22 -0.63 -0.24  0.31  0.38 >
+INFO: ngram_search_fwdtree.c(1549):     1295 words recognized (16/fr)
+INFO: ngram_search_fwdtree.c(1551):   249713 senones evaluated (3045/fr)
+INFO: ngram_search_fwdtree.c(1553):   332901 channels searched (4059/fr), 35646 1st, 40978 last
+INFO: ngram_search_fwdtree.c(1557):     3185 words for which last channels evaluated (38/fr)
+INFO: ngram_search_fwdtree.c(1560):    28344 candidate words for entering last phone (345/fr)
+INFO: ngram_search_fwdtree.c(1562): fwdtree 1.79 CPU 2.183 xRT
+INFO: ngram_search_fwdtree.c(1565): fwdtree 1.81 wall 2.207 xRT
+INFO: ngram_search_fwdflat.c(302): Utterance vocabulary contains 48 words
+INFO: ngram_search_fwdflat.c(937):      567 words recognized (7/fr)
+INFO: ngram_search_fwdflat.c(939):    56419 senones evaluated (688/fr)
+INFO: ngram_search_fwdflat.c(941):    64144 channels searched (782/fr)
+INFO: ngram_search_fwdflat.c(943):     2865 words searched (34/fr)
+INFO: ngram_search_fwdflat.c(945):     2279 word transitions (27/fr)
+INFO: ngram_search_fwdflat.c(948): fwdflat 0.23 CPU 0.280 xRT
+INFO: ngram_search_fwdflat.c(951): fwdflat 0.23 wall 0.284 xRT
+INFO: ngram_search.c(1266): lattice start node <s>.0 end node </s>.73
+INFO: ngram_search.c(1294): Eliminated 0 nodes before end node
+INFO: ngram_search.c(1399): Lattice has 81 nodes, 188 links
+INFO: ps_lattice.c(1365): Normalizer P(O) = alpha(</s>:73:80) = -526400
+INFO: ps_lattice.c(1403): Joint P(O,S) = -533720 P(S|O) = -7320
+INFO: ngram_search.c(888): bestpath 0.01 CPU 0.012 xRT
+INFO: ngram_search.c(891): bestpath 0.02 wall 0.021 xRT
+000000000: steven
+Processing hyp...
+READY....
 
 ```
 
-We are here
+### Dictionary setup
+The default installation of PocketSphinx comes with a large dictionary of possible words. This is slow, and also too much - if we only want to use some limited commands we can speed things up significantly. In addition, there is a smaller change of 'misunderstanding'. Additional details on a DIY procedure can be found [here] (http://kerneldriver.org/blog/2013/02/08/using-pocketsphinx-part-2-using-the-cmu-cambridge-statistical-language-modeling-toolkit/); the easy way is to use [this] (http://www.speech.cs.cmu.edu/tools/lmtool-new.html). Create a new text file (e.g. custom_dic.txt) and fill it with the sentences you want to be recognized. An example could be:
 
-=============================================================================================================
-Path settings
-```shell
-export PYTHONPATH="/usr/local/lib/python2.7/site-packages"
+```
+hello steven
+lights on
+lights off
+lights down
+lights up
+set alarm to 
+one
+two 
+three
+four
+five
+six
+seven
+eight
+nine
+ten
+eleven
+twelve
+play music
+play movie
+snooze alarm
+stop alarm
 ```
 
-Get langauge and acoustic models from
-http://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/US%20English%20Generic%20Language%20Model/
-http://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/US%20English%20Generic%20Acoustic%20Model/
+Upload the text file using the BROWSE button on [this] (http://www.speech.cs.cmu.edu/tools/lmtool-new.html) page and click on COMPILE KNOWLEDGE BASE. This will take you to the next page; copy the link to the tar file (somewhere on top) and wget it (in this case, it was http://www.speech.cs.cmu.edu/tools/product/1384963831_29749/TAR2693.tgz - note that the file will be deleted about 30 minutes after it is generated). 
 
-``` shell
-wget -c http://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/US%20English%20Generic%20Language%20Model/en-us.lm.dmp/download 
-wget -c http://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/US%20English%20Generic%20Acoustic%20Model/en-us.tar.gz/download
+Untar the file in ```/home/pi``` using ```tar xvf TAR2693.tgz``` (or whatever the filename was). Now it should be possible to run the voice recognition with the custom dictionary (note the filenames here - it depends on what the tar file was named!) using ```./voiceserver -adcdev plughw:1,0 -samprate 16000 -dict /home/pi/2693.dic -lm /home/pi/2693.lm``` and check if commands are recognized. An example output is shown below
+
+```
+[other output deleted]
+
+Warning: Could not find Capture element
+READY....
+Listening...
+Recording is stopped, start recording with ad_start_rec
+Stopped listening, please wait...
+INFO: cmn_prior.c(121): cmn_prior_update: from < 56.00 -3.00  1.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00 >
+INFO: cmn_prior.c(139): cmn_prior_update: to   < 45.55  1.03  0.19 -0.90  0.07  0.38  0.46  0.42  0.63 -0.66 -0.95 -0.14 -0.00 >
+INFO: ngram_search_fwdtree.c(1549):      837 words recognized (11/fr)
+INFO: ngram_search_fwdtree.c(1551):    27110 senones evaluated (361/fr)
+INFO: ngram_search_fwdtree.c(1553):    16759 channels searched (223/fr), 2130 1st, 12153 last
+INFO: ngram_search_fwdtree.c(1557):     1234 words for which last channels evaluated (16/fr)
+INFO: ngram_search_fwdtree.c(1560):     1036 candidate words for entering last phone (13/fr)
+INFO: ngram_search_fwdtree.c(1562): fwdtree 0.16 CPU 0.213 xRT
+INFO: ngram_search_fwdtree.c(1565): fwdtree 1.64 wall 2.184 xRT
+INFO: ngram_search_fwdflat.c(302): Utterance vocabulary contains 19 words
+INFO: ngram_search_fwdflat.c(937):      225 words recognized (3/fr)
+INFO: ngram_search_fwdflat.c(939):    33084 senones evaluated (441/fr)
+INFO: ngram_search_fwdflat.c(941):    26742 channels searched (356/fr)
+INFO: ngram_search_fwdflat.c(943):     1287 words searched (17/fr)
+INFO: ngram_search_fwdflat.c(945):      959 word transitions (12/fr)
+INFO: ngram_search_fwdflat.c(948): fwdflat 0.10 CPU 0.133 xRT
+INFO: ngram_search_fwdflat.c(951): fwdflat 0.10 wall 0.136 xRT
+INFO: ngram_search.c(1214): </s> not found in last frame, using ON.73 instead
+INFO: ngram_search.c(1266): lattice start node <s>.0 end node ON(2).51
+INFO: ngram_search.c(1294): Eliminated 15 nodes before end node
+INFO: ngram_search.c(1399): Lattice has 51 nodes, 34 links
+INFO: ps_lattice.c(1365): Normalizer P(O) = alpha(ON(2):51:73) = -500840
+INFO: ps_lattice.c(1403): Joint P(O,S) = -501010 P(S|O) = -170
+INFO: ngram_search.c(888): bestpath 0.00 CPU 0.000 xRT
+INFO: ngram_search.c(891): bestpath 0.01 wall 0.009 xRT
+000000000: LIGHTS ON
+Processing hyp...
+READY....
+Listening...
+Recording is stopped, start recording with ad_start_rec
+Stopped listening, please wait...
+INFO: cmn_prior.c(121): cmn_prior_update: from < 45.55  1.03  0.19 -0.90  0.07  0.38  0.46  0.42  0.63 -0.66 -0.95 -0.14 -0.00 >
+INFO: cmn_prior.c(139): cmn_prior_update: to   < 44.27  0.08  0.03 -1.10 -0.00  0.29  0.27  0.53  0.69 -0.97 -0.63 -0.17  0.11 >
+INFO: ngram_search_fwdtree.c(1549):      960 words recognized (11/fr)
+INFO: ngram_search_fwdtree.c(1551):    31580 senones evaluated (351/fr)
+INFO: ngram_search_fwdtree.c(1553):    19936 channels searched (221/fr), 2580 1st, 14436 last
+INFO: ngram_search_fwdtree.c(1557):     1506 words for which last channels evaluated (16/fr)
+INFO: ngram_search_fwdtree.c(1560):     1110 candidate words for entering last phone (12/fr)
+INFO: ngram_search_fwdtree.c(1562): fwdtree 0.20 CPU 0.222 xRT
+INFO: ngram_search_fwdtree.c(1565): fwdtree 1.79 wall 1.986 xRT
+INFO: ngram_search_fwdflat.c(302): Utterance vocabulary contains 22 words
+INFO: ngram_search_fwdflat.c(937):      291 words recognized (3/fr)
+INFO: ngram_search_fwdflat.c(939):    37576 senones evaluated (418/fr)
+INFO: ngram_search_fwdflat.c(941):    30242 channels searched (336/fr)
+INFO: ngram_search_fwdflat.c(943):     1555 words searched (17/fr)
+INFO: ngram_search_fwdflat.c(945):     1166 word transitions (12/fr)
+INFO: ngram_search_fwdflat.c(948): fwdflat 0.12 CPU 0.133 xRT
+INFO: ngram_search_fwdflat.c(951): fwdflat 0.12 wall 0.137 xRT
+INFO: ngram_search.c(1266): lattice start node <s>.0 end node </s>.73
+INFO: ngram_search.c(1294): Eliminated 0 nodes before end node
+INFO: ngram_search.c(1399): Lattice has 54 nodes, 65 links
+INFO: ps_lattice.c(1365): Normalizer P(O) = alpha(</s>:73:88) = -562732
+INFO: ps_lattice.c(1403): Joint P(O,S) = -564769 P(S|O) = -2037
+INFO: ngram_search.c(888): bestpath 0.01 CPU 0.011 xRT
+INFO: ngram_search.c(891): bestpath 0.01 wall 0.008 xRT
+000000001: LIGHTS OFF
+Processing hyp...
+READY....
 ```
 
-run with
-- not neccse. after recomp 
+Using the 'steven'keyword will result in some error messagesm, since festival is not up and running, which is the next step. 
 
-` LD_LIBRARY_PATH=/usr/local/lib /usr/local/bin/pocketsphinx_continuous `
+### Festival setup and configuration
+For performance reasons, this should be done on a different machine, but too keep thing easier, the RPi is used. Execute  ```apt-get festival``` and check if this works by calling ```echo "Give me some audiofeedback" | festival --tts```. Additonal (better) voices etc., can be installed using [this guide] (http://ubuntuforums.org/showthread.php?t=751169) - it is definitely worth the extra effort! To make festival run as a server, execute ```festival --server &``` - default it runs on port 1314, and the voiceserver is hardcoded to localhost (127.0.0.1) and this port (this really should be some parameters instead). Re-run voiceserver and say 'steven' at the READY prompt - this should provide some audio feedback when recognized.
 
-Select correct input and more: https://sites.google.com/site/observing/Home/speech-recognition-with-the-raspberry-pi
+If you run festival on a different server, modify the source code in ```voiceserver.c``` and change the IP address/port values around line 260-265, recompile using 
+```
+gcc -o voiceserver voiceserver.c -DMODELDIR=\"`pkg-config --variable=modeldir pocketsphinx`\" `pkg-config --cflags --libs pocketsphinx sphinxbase`
+```
+and rerun using ````./voiceserver -adcdev plughw:1,0 -samprate 16000 -dict /home/pi/2693.dic -lm /home/pi/2693.lm``` and confirm when saying 'steven', audio feedback is given.
 
-Remove all pulseaudio, install per http://wiki.roberttwomey.com/Raspberry_Pi#pocketsphinx
-Should display in make process that ALSA is being used instead of pulseaudio
+### OpenHAB configuration
+The OpenHab configuration consists of 2 parts. In the configuration, a TCP item needs to be added that allows for communication between OpenHAB and te RPi. Depending on what TCP addon is used, it should be something like below:
 
-Install tool kit per http://kerneldriver.org/blog/2013/02/08/using-pocketsphinx-part-2-using-the-cmu-cambridge-statistical-language-modeling-toolkit/
-
-Source festival https://github.com/zeehio/festival/tree/master/examples
-
-Per http://www.ghatage.com/2012/12/make-pocketsphinx-recognize-new-words/
-Create dic/lang model: http://www.speech.cs.cmu.edu/tools/lmtool.html using input file with sentences & words unzip tar file, load with
-
-```shell
-pocketsphinx_continuous -adcdev sysdefault -samprate 16000 -dict /home/pi/4203.dic -lm /home/pi/4203.lm (or whatever lm/doc are returned)
+```java
+String rpi { tcp="*[192.168.1.130:3000]" } // raspberry pi ip address and port (hardcoded to 3000), both directions
 ```
 
-Pocketsphinx links
-------------------
-- Features discussion http://sourceforge.net/p/cmusphinx/discussion/help/thread/49e34dff/
-- Local lmtools http://scribblej.com/svn/ and http://www.jaivox.com/pocketsphinx.html
-- Acoustic model http://cmusphinx.sourceforge.net/wiki/tutorialadapt
+Then a set of rules need to be added: 1 to initiate the connection between the RPi and 1 to handle incoming commands that are send from the RPi and handled by OpenHAB. See exampels below (note that this might also depend on the TCP addon version, what should be used). Basically, when the state of the TCP item changes (i.e. a message is send from the RPI to OpenHAB), something needs to be executed by OpenHAB. When a command is send form OpenHAB to the RPi, it will (via festival) provide the audio feedback. If voiceserver is run form an SSH session, this in/out flow should be visible in the terminal.
 
-Other links
------------
-http://kerneldriver.org/blog/2013/02/08/using-pocketsphinx-part-1-using-the-sphinx-knowledge-base-tool/
-http://cmusphinx.sourceforge.net/wiki/sphinxinaction
-http://cmusphinx.sourceforge.net/wiki/tutorialpocketsphinx
-http://stackoverflow.com/questions/4535208/pocketsphinx-adding-words-and-improving-accuracy
-XBMC voice control http://forum.xbmc.org/showthread.php?tid=123621
-http://hackaday.com/2013/08/11/voice-controlled-home-automation-uses-raspberry-pi-and-lightwaverf/ 
-http://stevenhickson.blogspot.nl/2013/06/installing-and-updating-piauisuite-and.html
-http://www.moop.org.uk/index.php/2013/08/10/voice-controlled-lights/
+```java
+// Startup rule
+rule Startup
+when
+   System started
+then
+   // let the voiceserver know that this is openhab by sending this string
+ 	 sendCommand(rpi, "OPENHAB")
+end
 
-TTS links
----------
-TTS http://elinux.org/RPi_Text_to_Speech_%28Speech_Synthesis%29
-http://wahelper.brailcom.org/doc/speechd/speech-dispatcher.html and http://devel.freebsoft.org/speechd
 
-Festival source code 
---------------------
+rule rpi_command_received
+when
+	 Item rpi changed
+then
+	 // logic to handle incoming command
+	 // print("Incoming:\n")
+	 // sendCommand(Bedpi, "Response from openhab")
+	 print("rpi:" + rpi.state.toString + "\n")
+	 
+ 	// check for lights on
+ 	if (rpi.state.toString.containsIgnoreCase("lights")) {
+  		println("lights command...")
+		  if (rpi.state.toString.containsIgnoreCase("on")) {
+			   // due something with the lights and send a response
+			   rpi.sendCommand("Turning lights on");
+		  } 
+		  if (rpi.state.toString.containsIgnoreCase("off")) {
+			   // due something with the lights and send a response
+						rpi.sendCommand("Turning lights off");
+		  }
+  }	
 
-https://github.com/zeehio/festival/blob/master/examples/festival_client.c
-https://github.com/zeehio/festival/blob/master/examples/festival_client.h
-http://www.festvox.org/docs/manual-1.4.3/festival_28.html#SEC129
-
-For compiling, see [here] (http://cmusphinx.sourceforge.net/wiki/tutorialpocketsphinx)
-custom continuous.c; compile using
-```shell
-gcc -o stevo continuous.c -DMODELDIR=\"`pkg-config --variable=modeldir pocketsphinx`\" `pkg-config --cflags --libs pocketsphinx sphinxbase`
+end 
 ```
 
-Call using
-```shell
-./stevo -adcdev sysdefault -samprate 16000 -dict /home/pi/4203.dic -lm /home/pi/4203.lm
-```
+
+### Missing in this setup
+- Correct TCP config in OpenHAB?
+- Setup WiFi (details)
+- Set hostname
+- Install basic stuff (e.g. nfs-client)
+- Install additional voices
+
+
+
