@@ -259,7 +259,7 @@ int say(const char msg[])
 	{
 		strcat(command_line, msg);
 		strcat(command_line, "| festival_client --server ");
-		strcat(command_line, "192.168.1.30"); // FESTIVAL_SERVER
+		strcat(command_line, "127.0.0.1"); // FESTIVAL_SERVER
 		strcat(command_line, " --port ");
 		strcat(command_line, "1314"); // FESTIVAL_PORT
 		strcat(command_line, " --ttw | aplay -q");
