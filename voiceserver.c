@@ -1,7 +1,5 @@
-/*$T temp.c GC 1.150 2013-09-13 13:41:37 */
-
 /*
-** << desription & license >>
+** << description & license >>
 */
 #include <stdio.h>
 #include <stdlib.h>
